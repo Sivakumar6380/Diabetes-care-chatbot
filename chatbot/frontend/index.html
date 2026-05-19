@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiaBeat AI — Intelligent Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <header>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div class="logo">
+                <i data-lucide="zap"></i>
+                DiaBeat AI
+            </div>
+            <div id="user-info" class="hidden" style="display: flex; align-items: center; gap: 1rem;">
+                <div id="neural-status" class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Neural Link: Offline</span>
+                </div>
+                <span id="user-name-display" style="font-size: 0.9rem; font-weight: 600;"></span>
+                <button onclick="logout()" class="chip"
+                    style="color: var(--error); border-color: var(--error);">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Auth Section -->
+    <div id="auth-section" class="container"
+        style="display: flex; align-items: center; justify-content: center; min-height: 80vh;">
+        <div class="stat-card" style="width: 100%; max-width: 450px; padding: 3rem; text-align: center;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; font-family: 'Poppins';">DiaBeat AI</h1>
+            <p style="color: var(--text-gray); margin-bottom: 2.5rem;">Futuristic Diabetes Management</p>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem; text-align: left;">
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-gray);">EMAIL</label>
+                    <input type="email" id="email" placeholder="explorer@diabeat.ai"
+                        style="width: 100%; padding: 1rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-top: 0.5rem;">
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-gray);">PASSWORD</label>
+                    <input type="password" id="password" placeholder="••••••••"
+                        style="width: 100%; padding: 1rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-top: 0.5rem;">
+                </div>
+                <button onclick="handleAuth()" id="auth-submit" class="btn-primary"
+                    style="padding: 1rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--cyan)); border: none; border-radius: 100px; color: white; cursor: pointer; margin-top: 1rem;">Initialize
+                    Session</button>
+                <p style="text-align: center; font-size: 0.9rem; color: var(--text-gray);" class="toggle-auth">
+                    New Identity? <a href="#" onclick="toggleAuthMode()"
+                        style="color: var(--cyan); text-decoration: none; font-weight: 700;">Create One</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-app-container" class="container hidden" style="display: flex; gap: 2rem; padding-top: 2rem;">
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar">
+            <nav>
+                <div class="nav-item active" onclick="switchTab('dashboard')">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('chat')">
+                    <i data-lucide="message-square"></i>
+                    <span>AI Assistant</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('reminders')">
+                    <i data-lucide="bell"></i>
+                    <span>Reminders</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('appointments')">
+                    <i data-lucide="calendar"></i>
+                    <span>Appointments</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('risk')">
+                    <i data-lucide="shield-alert"></i>
+                    <span>Risk Analysis</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main style="flex: 1; min-width: 0;">
+            <!-- Dashboard Tab -->
+            <section id="tab-dashboard" class="tab-content">
+                <section class="hero" style="padding: 1rem 0 2rem;">
+                    <h1 class="hero-title" style="font-size: 2.5rem;">Intelligent Care</h1>
+                    <p class="hero-subtitle">Smart Diabetes Care Powered by Futuristic AI.</p>
+                </section>
+
+                <div class="dashboard-grid">
+                    <div class="stat-card stat-blue" id="stat-card-reading">
+                        <div class="stat-icon"><i data-lucide="activity"></i></div>
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-gray);">LIVE GLUCOSE</div>
+                        <div id="latest-reading-stat" style="font-size: 1.75rem; font-weight: 800; margin: 0.25rem 0;">
+                            -- mg/dL</div>
+                        <div id="latest-reading-status" style="font-size: 0.75rem; opacity: 0.8;">Neural Sync Pending
+                        </div>
+                    </div>
+                    <div class="stat-card stat-cyan">
+                        <div class="stat-icon"><i data-lucide="droplets"></i></div>
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-gray);">HYDRATION</div>
+                        <div id="hydration-stat" style="font-size: 1.75rem; font-weight: 800; margin: 0.25rem 0;">
+                            Optimal</div>
+                        <div id="hydration-status-msg" style="font-size: 0.75rem; color: var(--cyan);">System Balanced
+                        </div>
+                    </div>
+                    <div class="stat-card stat-orange">
+                        <div class="stat-icon"><i data-lucide="clock"></i></div>
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-gray);">LAST SYNC</div>
+                        <div id="last-reading-time" style="font-size: 1.75rem; font-weight: 800; margin: 0.25rem 0;">
+                            --:--</div>
+                        <div style="font-size: 0.75rem; opacity: 0.8;">Latest Record</div>
+                    </div>
+                </div>
+
+                <!-- Chart Card -->
+                <div class="stat-card" style="margin-bottom: 2.5rem; height: 350px;">
+                    <h3 style="margin-bottom: 1rem; font-weight: 700;">Glucose Trend Analysis</h3>
+                    <canvas id="glucoseChart"></canvas>
+                </div>
+
+                <!-- Log Card -->
+                <div class="stat-card"
+                    style="margin-bottom: 2.5rem; border-color: var(--primary); background: rgba(59, 130, 246, 0.05);">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <i data-lucide="plus-circle" style="color: var(--primary);"></i>
+                        <h3 style="font-weight: 700;">Transmit Reading</h3>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem;">
+                        <input type="number" id="glucose-value" placeholder="Magnitude (mg/dL)"
+                            style="padding: 0.75rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white;">
+                        <select id="reading-type"
+                            style="padding: 0.75rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white;">
+                            <option value="Fasting">Fasting</option>
+                            <option value="Post-meal">Post-meal</option>
+                            <option value="Random">Random</option>
+                            <option value="Before Bed">Before Bed</option>
+                        </select>
+                        <button onclick="logGlucose()" class="btn-primary"
+                            style="padding: 0 2rem; background: var(--primary); border: none; border-radius: 100px; color: white; font-weight: 700; cursor: pointer;">Transmit</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chat Tab -->
+            <section id="tab-chat" class="tab-content hidden">
+                <div class="chat-layout" style="grid-template-columns: 1fr; height: 70vh;">
+                    <div class="chat-window">
+                        <div
+                            style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700;">
+                                <div
+                                    style="width: 8px; height: 8px; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 10px var(--cyan);">
+                                </div>
+                                <span id="ai-core-title">AI Assistant Core</span>
+                            </div>
+                            <div style="font-size: 0.7rem; color: var(--text-gray); letter-spacing: 1px;">NEURAL BRIDGE
+                                ACTIVE</div>
+                        </div>
+                        <div id="messages-container" class="messages-area"></div>
+                        <div id="typing-indicator" style="display: none; padding: 0 1.5rem 1rem;">
+                            <div class="typing-indicator">
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                        <div class="chat-footer">
+                            <div style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.75rem;">
+                                <div class="chip" onclick="quickSend('Symptoms of low sugar')">Low Sugar Signs</div>
+                                <div class="chip" onclick="quickSend('How much water should I drink?')">Hydration Tips
+                                </div>
+                                <div class="chip" onclick="quickSend('Healthy breakfast ideas')">Meal Ideas</div>
+                            </div>
+                            <div class="input-box">
+                                <input type="text" id="chat-input" placeholder="Initiate query..."
+                                    onkeypress="handleKeyPress(event)">
+                                <button onclick="sendMessage()" class="btn-icon"><i data-lucide="send"
+                                        style="width: 18px;"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reminders Tab -->
+            <section id="tab-reminders" class="tab-content hidden">
+                <section class="hero" style="padding: 1rem 0 1.5rem; text-align: left;">
+                    <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">Wellness Assistant</h1>
+                    <p style="color: var(--text-gray);">Intelligent diabetes companion and smart reminders.</p>
+                </section>
+
+                <!-- AI Wellness Insight -->
+                <div class="ai-summary-card">
+                    <div style="position: relative; z-index: 1;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                            <i data-lucide="sparkles" style="color: var(--cyan);"></i>
+                            <h3 style="font-weight: 700;">Daily AI Wellness Insight</h3>
+                        </div>
+                        <p id="ai-wellness-insight"
+                            style="font-size: 1.1rem; line-height: 1.6; color: var(--text-white); max-width: 800px;">
+                            Initialize your profile to generate intelligent healthcare insights...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Analytics Row -->
+                <div class="analytics-grid">
+                    <div class="stat-card" style="padding: 1.25rem;">
+                        <div
+                            style="font-size: 0.65rem; font-weight: 800; color: var(--text-gray); letter-spacing: 1px; margin-bottom: 0.5rem;">
+                            MEDICATION CONSISTENCY</div>
+                        <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                            <span id="med-consistency" style="font-size: 1.5rem; font-weight: 800;">--%</span>
+                            <i data-lucide="trending-up" style="width: 14px; color: var(--success);"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="padding: 1.25rem;">
+                        <div
+                            style="font-size: 0.65rem; font-weight: 800; color: var(--text-gray); letter-spacing: 1px; margin-bottom: 0.5rem;">
+                            WATER INTAKE</div>
+                        <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                            <span id="water-stat-mini" style="font-size: 1.5rem; font-weight: 800;">--/8</span>
+                            <span style="font-size: 0.75rem; color: var(--text-gray);">Glasses</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="padding: 1.25rem;">
+                        <div
+                            style="font-size: 0.65rem; font-weight: 800; color: var(--text-gray); letter-spacing: 1px; margin-bottom: 0.5rem;">
+                            ACTIVE TASKS</div>
+                        <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                            <span id="active-reminders-count" style="font-size: 1.5rem; font-weight: 800;">0</span>
+                            <span style="font-size: 0.75rem; color: var(--text-gray);">Neural Links</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Reminders -->
+                <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <i data-lucide="bell" style="width: 20px; color: var(--primary);"></i>
+                    Active Neural Reminders
+                </h3>
+                <div id="reminders-list" class="grid-list" style="margin-bottom: 3rem;">
+                    <!-- Reminders Injected -->
+                </div>
+
+                <!-- Create Reminder Section -->
+                <div class="stat-card" style="border-color: var(--primary); background: rgba(59, 130, 246, 0.05);">
+                    <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <i data-lucide="plus-circle" style="color: var(--primary);"></i>
+                        Initialize New Wellness Link
+                    </h3>
+
+                    <!-- Quick AI Input -->
+                    <div class="input-box" style="margin-bottom: 1.5rem; background: rgba(0,0,0,0.3);">
+                        <i data-lucide="mic" style="width: 18px; color: var(--text-gray);"></i>
+                        <input type="text" id="ai-reminder-input"
+                            placeholder="e.g., 'Remind me to take Metformin at 8 PM'"
+                            onkeypress="if(event.key==='Enter') createReminderFromAI()">
+                        <button onclick="createReminderFromAI()" class="btn-icon" style="background: var(--primary);"><i
+                                data-lucide="sparkles"></i></button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label class="label-tiny">TYPE</label>
+                            <select id="rem-type" class="input-glass">
+                                <option value="MEDICINE">Medication</option>
+                                <option value="WATER">Water Intake</option>
+                                <option value="GLUCOSE">Blood Sugar Check</option>
+                                <option value="EXERCISE">Exercise/Walk</option>
+                                <option value="MEAL">Meal/Nutrition</option>
+                                <option value="SLEEP">Sleep/Rest</option>
+                                <option value="APPOINTMENT">Appointment</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label-tiny">TITLE / MEDICINE</label>
+                            <input type="text" id="rem-title" placeholder="e.g., Metformin" class="input-glass">
+                        </div>
+                        <div>
+                            <label class="label-tiny">DOSAGE (OPTIONAL)</label>
+                            <input type="text" id="rem-dosage" placeholder="e.g., 500mg" class="input-glass">
+                        </div>
+                    </div>
+
+                    <div
+                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <label class="label-tiny">TIME</label>
+                            <input type="time" id="rem-time" class="input-glass">
+                        </div>
+                        <div>
+                            <label class="label-tiny">FREQUENCY</label>
+                            <select id="rem-freq" class="input-glass">
+                                <option value="Daily">Daily</option>
+                                <option value="Every 4 hours">Every 4 hours</option>
+                                <option value="Twice a day">Twice a day</option>
+                                <option value="Weekly">Weekly</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label-tiny">MEAL TIMING</label>
+                            <select id="rem-meal" class="input-glass">
+                                <option value="None">None</option>
+                                <option value="Before Breakfast">Before Breakfast</option>
+                                <option value="After Breakfast">After Breakfast</option>
+                                <option value="Before Lunch">Before Lunch</option>
+                                <option value="After Lunch">After Lunch</option>
+                                <option value="Before Dinner">Before Dinner</option>
+                                <option value="After Dinner">After Dinner</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="addReminder()" class="btn-primary"
+                        style="width: 100%; padding: 1rem; font-size: 1rem; letter-spacing: 1px;">ACTIVATE NEURAL
+                        REMINDER</button>
+                </div>
+            </section>
+
+            <!-- Appointments Tab -->
+            <section id="tab-appointments" class="tab-content hidden">
+                <div class="stat-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">Scheduled Consultations</h3>
+                    <div id="appointments-list" class="grid-list">
+                        <!-- Appointments Injected -->
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3 style="margin-bottom: 1rem;">Book Consultation</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem;">
+                        <input type="text" id="doctor-name" placeholder="Physician/Specialist"
+                            style="padding: 0.75rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white;">
+                        <input type="datetime-local" id="app-time"
+                            style="padding: 0.75rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white;">
+                        <button onclick="bookAppointment()" class="btn-primary"
+                            style="padding: 0 2rem;">Schedule</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Risk Tab -->
+            <section id="tab-risk" class="tab-content hidden">
+                <div class="stat-card" style="margin-bottom: 2rem;">
+                    <h3>ML Readmission Risk Assessment</h3>
+                    <p style="color: var(--text-gray); margin-bottom: 2rem;">Analyzes 8 clinical parameters to estimate
+                        hospital readmission probability.</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" id="risk-form">
+                        <div>
+                            <label class="label-tiny">AGE RANGE</label>
+                            <select id="risk-age" class="input-glass">
+                                <option value="[40-50)">40-50</option>
+                                <option value="[50-60)">50-60</option>
+                                <option value="[60-70)">60-70</option>
+                                <option value="[70-80)">70-80</option>
+                                <option value="[0-10)">0-10</option>
+                                <option value="[10-20)">10-20</option>
+                                <option value="[20-30)">20-30</option>
+                                <option value="[30-40)">30-40</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label-tiny">TIME IN HOSPITAL (DAYS)</label>
+                            <input type="number" id="risk-time" value="3" class="input-glass">
+                        </div>
+                        <div>
+                            <label class="label-tiny">LAB PROCEDURES</label>
+                            <input type="number" id="risk-lab" value="40" class="input-glass">
+                        </div>
+                        <div>
+                            <label class="label-tiny">NUM MEDICATIONS</label>
+                            <input type="number" id="risk-meds" value="15" class="input-glass">
+                        </div>
+                        <div>
+                            <label class="label-tiny">NUM DIAGNOSES</label>
+                            <input type="number" id="risk-diag" value="7" class="input-glass">
+                        </div>
+                        <div>
+                            <label class="label-tiny">INSULIN STATUS</label>
+                            <select id="risk-insulin" class="input-glass">
+                                <option value="No">No</option>
+                                <option value="Steady">Steady</option>
+                                <option value="Up">Up</option>
+                                <option value="Down">Down</option>
+                            </select>
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <button onclick="analyzeRisk()" class="btn-primary"
+                                style="width: 100%; padding: 1rem;">Initialize AI Risk Scan</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="risk-result" class="stat-card hidden"
+                    style="border-color: var(--cyan); background: rgba(6, 182, 212, 0.05);">
+                    <div style="text-align: center; padding: 1rem;">
+                        <div id="risk-score-display" style="font-size: 3rem; font-weight: 800; color: var(--cyan);">0%
+                        </div>
+                        <div id="risk-level-display" style="font-weight: 700; margin-bottom: 1rem;">LOW RISK</div>
+                        <p id="risk-msg-display" style="color: var(--text-gray);"></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>
